@@ -1,0 +1,492 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <title>portfolio in 27</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <!-- フォント -->
+  <link href="https://fonts.googleapis.com/css2?family=Zen+Kaku+Gothic+New:wght@300;400;500&display=swap" rel="stylesheet">
+
+  <style>
+    :root {
+      --bg-color: #fbfbfc;
+      --card-bg: #ffffff;
+      --text-main: #2d3748;
+      --text-sub: #718096;
+      --accent-blue: #63b3ed;
+      --accent-blue-light: #ebf8ff;
+      --border-color: #e2e8f0;
+    }
+
+    body {
+      margin: 0;
+      font-family: 'Zen Kaku Gothic New', sans-serif;
+      background-color: var(--bg-color);
+      color: var(--text-main);
+      line-height: 1.7;
+    }
+
+    .wrapper {
+      max-width: 900px;
+      margin: 0 auto;
+      padding: 3rem 1.5rem 4rem;
+    }
+
+    /* ヘッダー */
+    header {
+      text-align: center;
+      margin-bottom: 2.5rem;
+    }
+
+    h1 {
+      font-size: 2rem;
+      font-weight: 400;
+      letter-spacing: 0.1em;
+      margin: 0 0 0.5rem;
+      color: #1a202c;
+      cursor: pointer;
+    }
+
+    .subtitle {
+      font-size: 0.85rem;
+      color: var(--text-sub);
+      letter-spacing: 0.05em;
+    }
+
+    /* メニュータブ */
+    .tab-menu {
+      display: flex;
+      justify-content: center;
+      gap: 0.8rem;
+      margin-bottom: 3rem;
+      border-bottom: 1px solid var(--border-color);
+      padding-bottom: 1.2rem;
+    }
+
+    .tab-btn {
+      background: none;
+      border: 1px solid transparent;
+      font-family: 'Zen Kaku Gothic New', sans-serif;
+      font-size: 0.9rem;
+      color: var(--text-sub);
+      cursor: pointer;
+      padding: 0.4rem 1.2rem;
+      border-radius: 20px;
+      transition: all 0.2s ease;
+    }
+
+    .tab-btn:hover {
+      color: var(--accent-blue);
+      background-color: var(--accent-blue-light);
+    }
+
+    .tab-btn.active {
+      background-color: var(--accent-blue);
+      color: #ffffff;
+      box-shadow: 0 2px 6px rgba(99, 179, 237, 0.3);
+    }
+
+    /* ビューの切り替え用クラス */
+    .view-section {
+      display: none;
+    }
+    .view-section.active-view {
+      display: block;
+    }
+
+    /* ギャラリー一覧 */
+    .gallery-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+      gap: 1.5rem;
+    }
+
+    .gallery-item {
+      background: var(--card-bg);
+      border-radius: 12px;
+      overflow: hidden;
+      border: 1px solid var(--border-color);
+      box-shadow: 0 2px 6px rgba(0, 0, 0, 0.02);
+      cursor: pointer;
+      transition: transform 0.25s ease, box-shadow 0.25s ease, border-color 0.25s ease;
+    }
+
+    .gallery-item:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 8px 20px rgba(99, 179, 237, 0.15);
+      border-color: var(--accent-blue);
+    }
+
+    .gallery-img {
+      width: 100%;
+      height: 220px;
+      object-fit: cover;
+      display: block;
+      background-color: #f7fafc;
+    }
+
+    .gallery-info {
+      padding: 1rem 1.2rem;
+      font-size: 0.85rem;
+    }
+
+    .gallery-title {
+      font-weight: 500;
+      color: var(--text-main);
+      margin-bottom: 0.2rem;
+    }
+
+    .gallery-date {
+      font-size: 0.78rem;
+      color: var(--text-sub);
+    }
+
+    /* 詳細ページビュー */
+    .detail-container {
+      background: var(--card-bg);
+      border-radius: 16px;
+      padding: 2.5rem 2rem;
+      border: 1px solid var(--border-color);
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.03);
+      max-width: 700px;
+      margin: 0 auto;
+    }
+
+    .back-btn {
+      background: none;
+      border: 1px solid var(--border-color);
+      font-family: 'Zen Kaku Gothic New', sans-serif;
+      font-size: 0.85rem;
+      color: var(--text-sub);
+      padding: 0.4rem 1rem;
+      border-radius: 20px;
+      cursor: pointer;
+      margin-bottom: 1.5rem;
+      transition: all 0.2s;
+    }
+
+    .back-btn:hover {
+      background-color: var(--accent-blue-light);
+      color: var(--accent-blue);
+      border-color: var(--accent-blue);
+    }
+
+    .detail-layout {
+      display: block;
+    }
+
+    .detail-img {
+      width: 100%;
+      border-radius: 8px;
+      object-fit: contain;
+      background-color: #f7fafc;
+      border: 1px solid var(--border-color);
+      margin-bottom: 1.5rem;
+    }
+
+    .detail-content h2 {
+      font-size: 1.6rem;
+      font-weight: 400;
+      margin: 0 0 0.3rem;
+      color: #1a202c;
+    }
+
+    .detail-date {
+      font-size: 0.85rem;
+      color: var(--text-sub);
+      margin-bottom: 1.5rem;
+    }
+
+    .detail-desc {
+      font-size: 0.95rem;
+      line-height: 1.9;
+      color: var(--text-main);
+    }
+
+    /* Aboutビューのカード */
+    .about-card {
+      background: var(--card-bg);
+      border-radius: 12px;
+      padding: 2rem;
+      border: 1px solid var(--border-color);
+      box-shadow: 0 2px 6px rgba(0, 0, 0, 0.02);
+      line-height: 1.8;
+      font-size: 0.95rem;
+    }
+
+    /* フッター */
+    footer {
+      text-align: center;
+      margin-top: 4rem;
+      font-size: 0.75rem;
+      color: var(--text-sub);
+      letter-spacing: 0.08em;
+      opacity: 0.7;
+    }
+  </style>
+</head>
+
+<body>
+
+  <div class="wrapper">
+    <!-- ヘッダー（タイトルクリックでホーム・Allに戻る） -->
+    <header>
+      <h1 onclick="switchTab('all')">portfolio in 27</h1>
+      <div class="subtitle">illustration & Product Design gallery</div>
+    </header>
+
+    <!-- メニュータブ -->
+    <nav class="tab-menu">
+      <button class="tab-btn active" id="btn-all" onclick="switchTab('all')">All</button>
+      <button class="tab-btn" id="btn-illust" onclick="switchTab('illust')">Illustration</button>
+      <button class="tab-btn" id="btn-product" onclick="switchTab('product')">Product Design</button>
+      <button class="tab-btn" id="btn-about" onclick="switchTab('about')">About</button>
+    </nav>
+
+    <!-- ================= 1. ギャラリー一覧（All / Illustration / Product Design） ================= -->
+    <main id="view-gallery" class="view-section active-view">
+      <div class="gallery-grid">
+        <!-- 作品1（クリックすると詳細1へ） -->
+        <div class="gallery-item" data-category="illust" onclick="showDetail('work1')">
+          <img src="img/tobenai_sakana_01.png" alt="飛べない魚" class="gallery-img">
+          <div class="gallery-info">
+            <div class="gallery-title">飛べない魚</div>
+            <div class="gallery-date">---</div>
+          </div>
+        </div>
+
+        <!-- 作品2（クリックすると詳細2へ） -->
+        <div class="gallery-item" data-category="product" onclick="showDetail('work2')">
+          <img src="img/sam_torimikuji.png" alt="鳥みくじ" class="gallery-img">
+          <div class="gallery-info">
+            <div class="gallery-title">鳥みくじ</div>
+            <div class="gallery-date">2025.3</div>
+          </div>
+        </div>
+
+        <!-- 作品3（クリックすると詳細3へ） -->
+        <div class="gallery-item" data-category="product" onclick="showDetail('work3')">
+          <img src="img/sam_umikuji.png" alt="うみくじ" class="gallery-img">
+          <div class="gallery-info">
+            <div class="gallery-title">うみくじ</div>
+            <div class="gallery-date">2025.7</div>
+          </div>
+        </div>
+      </div>
+    </main>
+
+    <!-- ================= 2. 各作品の詳細ビュー（初期は非表示） ================= -->
+    <div id="view-detail" class="view-section">
+      <button class="back-btn" onclick="goBack()">&larr; Back to Gallery</button>
+      
+      <div class="detail-container">
+        <!-- 作品1の詳細 -->
+        <div class="detail-content-item" id="detail-work1" style="display:none;">
+          <div class="detail-layout">
+            <img src="img/tobenai_sakana_01.png" alt="飛べない魚" class="detail-img">
+            <div class="detail-content">
+              <h2>飛べない魚</h2>
+              <div class="detail-date">---</div>
+              <div class="detail-desc">
+                魚だから、とべない。<br>
+                －そんなの、だれが決めたんだろう。<br>
+                <br>
+                とべるかどうかより、とびたいと思ってることのほうが、たぶんだいじ。いつもおだやかに泳いでるけど、心の中ではそらへの憧れが燃えています。
+                でもときどき、空を見すぎて流れにのまれます。空にあこがれる「飛べない魚」といっしょに、のんびり絵を描いています。手書きでポップな動物キャラがすき。
+                見た人の心がちょっとゆるむような絵を目指しています。
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- 作品2の詳細 -->
+        <div class="detail-content-item" id="detail-work2" style="display:none;">
+          <div class="detail-layout">
+            <img src="img/bn_torimikuji.png" alt="鳥みくじ" class="detail-img">
+            
+            <div class="detail-content">
+              <h2>鳥みくじ</h2>
+              <div class="detail-date">2026.03</div>
+
+              <div class="detail-desc">
+                <p><b>鳥みくじ -Concept-</b></p>
+                「鳥」といえば、何を思い浮かべますか？<br><br>
+                街中でよく見る鳥を思い浮かべる人もいれば<br>
+                自分の好きな鳥や、何かのキャラクターを<br>
+                思い浮かべる人もいるでしょう。<br><br>
+                翼があって、空を自由に飛べる"憧れ"として<br>
+                見ている人もいるかもしれません。<br><br>
+                個性豊かで親しみやすい鳥たち。<br>
+                「鳥みくじ」はさまざまな鳥の特徴を<br>
+                おみくじに見立てた鳥たちからのメッセージです。<br><br>
+                特に深い意味はないけれど、<br>
+                このおみくじを引いた人が自由に解釈し<br>
+                楽しんでもらいつつ、「鳥」という<br>
+                おもしろい生き物に興味を持ってもらえたらうれしいです。<br><br>
+                人間には鳥のような翼はないけれど、心はいつだって自由。<br>
+                鳥のように自分らしく飛べたらいいですね。<br><br>
+                Rocca<br><br>
+                <b>製作者 -Producer-</b><br>
+                word by Rocca<br>
+                illustration by mine<br>
+                <b>使用ツールProducer</b><br>
+                ibisPaint／Canva
+              </div>
+            </div>
+            <div style="margin-top: 2rem;">
+                <img src="img/toriA.png" alt="鳥みくじA" class="detail-img">
+                <img src="img/toriB.png" alt="鳥みくじB" class="detail-img">
+                <img src="img/toriC.png" alt="鳥みくじC" class="detail-img">
+                <img src="img/toriD.png" alt="鳥みくじD" class="detail-img">
+            </div>
+          </div>
+        </div>
+
+        <!-- 作品3の詳細 -->
+        <div class="detail-content-item" id="detail-work3" style="display:none;">
+          <div class="detail-layout">
+            <img src="img/bn_umikuji.png" alt="うみくじ" class="detail-img">
+            
+            <div class="detail-content">
+              <h2>うみくじ</h2>
+              <div class="detail-date">2025.07</div>
+              
+              <div class="detail-desc">
+                <b>うみくじ -Concept-</b><br><br>
+                スーパーで見かける魚介類も<br>
+                普段目にすることのない深海魚も<br>
+                場所は違えどみんな海の中で生きています｡<br>
+                陸とはまったく違う環境の中で進化を遂げた<br>
+                多種多様ないきものたち｡<br><br>
+                いつもなら気にすることのない<br>
+                魚たちの姿・形も一旦疑問を持ってしまうと<br>
+                ｢どうしてこの形になったんだろう？｣<br>
+                ｢なぜたくさんの脚があるのだろう？｣<br>
+                などと､つぎつぎ謎が湧き上がります｡<br><br>
+                不思議なのは､水の中を自由に泳ぐ魚たちを前にすると<br>
+                時間も忘れてただただ見入ってしまうということ｡<br>
+                ずっと飽きずに見ていられるのは<br>
+                海のいきものだけが持つおもしろい生態に<br>
+                豊かさを感じるからかもしれませんね｡<br><br>
+                そんな海のいきものたちの<br>
+                名前や持ち味を拝借しつつ<br>
+                おみくじに仕立てた｢うみくじ｣は<br>
+                自由に解釈する楽しみが詰まった<br>
+                いきものたちからのメッセージです｡<br><br>
+                このおみくじを通して<br>
+                海で生きる個性的ないきものたちを<br>
+                自分に重ね合わせてみたり<br>
+                グッと身近に感じてもらえたらうれしいです｡<br>
+                夏らしくて活きのいい（？）イラストと共に<br>
+                お楽しみください｡<br><br>
+                Rocca & mine <br>
+                <b>製作者 -Producer-</b><br>
+                word by Rocca<br>
+                illustration by mine<br><br>
+                <b>使用ツールProducer</b><br>
+                ibisPaint／Canva
+              </div>
+            </div>
+            <div style="margin-top: 2rem;">
+              <img src="img/umikuji1-8.png" alt="うみくじ" class="detail-img"><br>
+              <img src="img/umikuji9-16.png" alt="うみくじ" class="detail-img"><br>
+              <img src="img/umikuji17-24.png" alt="うみくじ" class="detail-img"><br>
+              <img src="img/umikuji25-32.png" alt="うみくじ" class="detail-img"><br>
+              <img src="img/umikuji33-40.png" alt="うみくじ" class="detail-img">
+            </div>
+          </div>
+        </div>
+
+      </div> <!-- ← ここ（detail-containerの閉じタグ）を追加しました -->
+    </div>   <!-- ← ここ（view-detailの閉じタグ）を追加しました -->
+
+    <!-- ================= 3. Aboutビュー（初期は非表示） ================= -->
+    <main id="view-about" class="view-section">
+      <div class="about-card">
+        <h2 style="font-weight:400; font-size:1.3rem; margin-top:0; color:#1a202c;">About me</h2>
+        <p>「portfolio in 27」をご覧いただきありがとうございます。</p>
+        <p>個人で制作したイラストレーションやグラフィック作品をマイペースにアーカイブしているページです。</p>
+        <p>name： mine</p>
+        <p></p>X（旧Twitter）：<a href="https://twitter.com/27mine_" target="_blank">@27mine_</a></p>
+        <p style="margin-bottom:0;">お問い合わせやご感想などは、各種SNSやメールよりお気軽にどうぞ。</p>
+      </div>
+    </main>
+
+    <footer>
+      &copy; portfolio in 27
+    </footer>
+  </div>
+
+  <!-- シンプルなタブ切り替え・詳細表示のスクリプト -->
+  <script>
+    function switchTab(tabName) {
+      // ビューの切り替え
+      document.getElementById('view-gallery').style.display = 'none';
+      document.getElementById('view-detail').style.display = 'none';
+      document.getElementById('view-about').style.display = 'none';
+
+      // ボタンのactive状態リセット
+      document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
+
+      const items = document.querySelectorAll('.gallery-item');
+
+      if (tabName === 'all') {
+        document.getElementById('view-gallery').style.display = 'block';
+        document.getElementById('btn-all').classList.add('active');
+        items.forEach(item => item.style.display = 'block');
+      } else if (tabName === 'illust') {
+        document.getElementById('view-gallery').style.display = 'block';
+        document.getElementById('btn-illust').classList.add('active');
+        items.forEach(item => {
+          if (item.getAttribute('data-category') === 'illust') {
+            item.style.display = 'block';
+          } else {
+            item.style.display = 'none';
+          }
+        });
+      } else if (tabName === 'product') {
+        document.getElementById('view-gallery').style.display = 'block';
+        document.getElementById('btn-product').classList.add('active');
+        items.forEach(item => {
+          if (item.getAttribute('data-category') === 'product') {
+            item.style.display = 'block';
+          } else {
+            item.style.display = 'none';
+          }
+        });
+      } else if (tabName === 'about') {
+        document.getElementById('view-about').style.display = 'block';
+        document.getElementById('btn-about').classList.add('active');
+      }
+    }
+
+    function showDetail(workId) {
+      // ギャラリーとAboutを隠す
+      document.getElementById('view-gallery').style.display = 'none';
+      document.getElementById('view-about').style.display = 'none';
+      
+      // 詳細ビューを表示
+      document.getElementById('view-detail').style.display = 'block';
+
+      // すべての詳細アイテムを隠す
+      document.querySelectorAll('.detail-content-item').forEach(item => {
+        item.style.display = 'none';
+      });
+
+      // 指定された作品の詳細だけを表示
+      document.getElementById('detail-' + workId).style.display = 'block';
+
+      // ページトップへスムーズにスクロール
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+
+    function goBack() {
+      // ギャラリーに戻る
+      switchTab('all');
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+  </script>
+
+</body>
+</html>
